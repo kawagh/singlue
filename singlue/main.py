@@ -15,18 +15,27 @@ def resolve_fn_or_cls(name: str, src_ast: ast.Module) -> Optional[ast.stmt]:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("source", help="file to glue")
+    parser.add_argument(
+        "-s",
+        "--show_before",
+        default=False,
+        action="store_true",
+        help="output source (before integrating) to standard error",
+    )
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    print("====================================", file=sys.stderr)
     assert Path(args.source).exists()
     with open(Path(args.source)) as f:
         res = ast.parse(source=f.read())
-    for stmt in res.body:
-        print(ast.unparse(stmt), file=sys.stderr)
-    print("====================================", file=sys.stderr)
+
+    if args.show_before:
+        print("====================================", file=sys.stderr)
+        for stmt in res.body:
+            print(ast.unparse(stmt), file=sys.stderr)
+        print("====================================", file=sys.stderr)
 
     for stmt in res.body:
         if isinstance(stmt, ast.ImportFrom):
