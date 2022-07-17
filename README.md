@@ -1,10 +1,59 @@
 # singlue
-A tool to resolve function,class codes and integrate them to single file.
+A CLI tool to resolve function,class codes and integrate them to single file.
 
 This program depends on `ast.unparse()`(added in `python3.9`).
 
-## example
+## installation
 ```sh
-python main.py example.py
-python main.py example2.py
+pip install singlue
+```
+
+## example usage
+
+```sh
+singlue main.py > output.py
+```
+`singlue` generates `output.py` from `main.py`,`library.py`.
+
+
+### `main.py`
+```python
+from library import one, two, Three
+
+
+assert one() + two() == Three().three()
+```
+
+### `library.py`
+```python
+def one() -> int:
+    return 1
+
+
+def two() -> int:
+    return 2
+
+
+class Three:
+    def __init__(self):
+        self.value = 3
+
+    def three(self):
+        return self.value
+```
+
+### `output.py`
+```python
+def one() -> int:
+    return 1
+def two() -> int:
+    return 2
+class Three:
+
+    def __init__(self):
+        self.value = 3
+
+    def three(self):
+        return self.value
+assert one() + two() == Three().three()
 ```
