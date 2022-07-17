@@ -31,8 +31,10 @@ def main():
     for stmt in res.body:
         if isinstance(stmt, ast.ImportFrom):
             # TODO replace import part to resolved code
-            # TODO skip third party library
             for func_or_cls in stmt.names:
+                if not Path(args.source).parent.joinpath(f"{stmt.module}.py").exists():
+                    # skip standard library (Example:`from math import sin`)
+                    continue
                 with open(Path(args.source).parent / f"{stmt.module}.py") as f:
                     res = ast.parse(source=f.read())
                     found_fn_or_cls = resolve_fn_or_cls(func_or_cls.name, res)
