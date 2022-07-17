@@ -33,8 +33,7 @@ def main():
             # TODO replace import part to resolved code
             # TODO skip third party library
             for func_or_cls in stmt.names:
-                # TODO fix source directory to search module
-                with open(Path(__file__).parent / f"{stmt.module}.py") as f:
+                with open(Path(args.source).parent / f"{stmt.module}.py") as f:
                     res = ast.parse(source=f.read())
                     found_fn_or_cls = resolve_fn_or_cls(func_or_cls.name, res)
                     if found_fn_or_cls:
