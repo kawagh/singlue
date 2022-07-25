@@ -13,7 +13,30 @@ pip install singlue
 ```sh
 singlue main.py > output.py
 ```
+
 `singlue` generates `output.py` from `main.py`,`library.py`.
+
+```dot
+digraph {
+main[label="main.py"];
+lib[label="library.py"];
+out[label="output.py"];
+subgraph cluster_input{
+    label="inputs"
+    color="blue"
+    main lib
+}
+subgraph cluster_output{
+    label="output"
+    color="red"
+    out
+}
+
+main->out
+lib->out
+}
+```
+
 
 
 ### `main.py`
