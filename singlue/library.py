@@ -1,3 +1,6 @@
+from math import factorial
+
+
 def one() -> int:
     return 1
 
@@ -12,3 +15,7 @@ class Three:
 
     def three(self):
         return self.value
+
+
+def six() -> int:
+    return factorial(3)

@@ -1,13 +1,14 @@
 import ast
 import sys
 import argparse
+from typing import Set, List
 from pathlib import Path
 from typing import Optional
 
 
 def resolve_fn_or_cls(name: str, src_ast: ast.Module) -> Optional[ast.stmt]:
     found_fn_or_cls = next(
-        filter(lambda x: getattr(x, "name") == name, src_ast.body), None
+        filter(lambda x: getattr(x, "name", None) == name, src_ast.body), None
     )
     return found_fn_or_cls
 
@@ -37,6 +38,9 @@ def main():
             print(ast.unparse(stmt), file=sys.stderr)
         print("====================================", file=sys.stderr)
 
+    import_sentences_in_library: Set[str] = set()
+    found_fn_or_cls_list: List[str] = []
+    non_import_sentences_in_main: List[str] = []
     for stmt in res.body:
         if isinstance(stmt, ast.ImportFrom):
             # TODO replace import part to resolved code
@@ -46,14 +50,26 @@ def main():
                     continue
                 with open(Path(args.source).parent / f"{stmt.module}.py") as f:
                     res = ast.parse(source=f.read())
+                    import_sentences_in_library |= set(
+                        map(
+                            ast.unparse,
+                            filter(lambda x: isinstance(x, ast.ImportFrom), res.body),
+                        )
+                    )
                     found_fn_or_cls = resolve_fn_or_cls(func_or_cls.name, res)
                     if found_fn_or_cls:
-                        print(ast.unparse(found_fn_or_cls))
+                        found_fn_or_cls_list.append(ast.unparse(found_fn_or_cls))
                     else:
                         raise RuntimeError(f"cannot find {func_or_cls.name}")
         else:
-            print(ast.unparse(stmt))
+            non_import_sentences_in_main.append(ast.unparse(stmt))
     # TODO resolve,duplicate import
+    for s in import_sentences_in_library:
+        print(s)  # contains unused imports
+    for s in found_fn_or_cls_list:
+        print(s)
+    for s in non_import_sentences_in_main:
+        print(s)
 
 
 if __name__ == "__main__":
