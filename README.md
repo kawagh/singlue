@@ -1,4 +1,8 @@
 # singlue
+[![PyPI version](https://badge.fury.io/py/singlue.svg)](https://pypi.org/project/singlue/)
+![Python Versions](https://img.shields.io/pypi/pyversions/singlue.svg)
+
+
 A CLI tool to resolve function,class codes and integrate them to single file.
 
 This program depends on `ast.unparse()`(added in `python3.9`).
