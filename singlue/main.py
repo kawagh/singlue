@@ -26,18 +26,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def main():
-    args = parse_args()
-    assert Path(args.source).exists()
-    with open(Path(args.source)) as f:
-        res = ast.parse(source=f.read())
-
-    if args.show_before:
-        print("====================================", file=sys.stderr)
-        for stmt in res.body:
-            print(ast.unparse(stmt), file=sys.stderr)
-        print("====================================", file=sys.stderr)
-
+def run(res: ast.Module, source: str):
     import_sentences_in_library: Set[str] = set()
     found_fn_or_cls_list: List[str] = []
     non_import_sentences_in_main: List[str] = []
@@ -45,10 +34,10 @@ def main():
         if isinstance(stmt, ast.ImportFrom):
             # TODO replace import part to resolved code
             for func_or_cls in stmt.names:
-                if not Path(args.source).parent.joinpath(f"{stmt.module}.py").exists():
+                if not Path(source).parent.joinpath(f"{stmt.module}.py").exists():
                     # skip standard library (Example:`from math import sin`)
                     continue
-                with open(Path(args.source).parent / f"{stmt.module}.py") as f:
+                with open(Path(source).parent / f"{stmt.module}.py") as f:
                     res = ast.parse(source=f.read())
                     import_sentences_in_library |= set(
                         map(
@@ -70,6 +59,21 @@ def main():
         print(s)
     for s in non_import_sentences_in_main:
         print(s)
+
+
+def main():
+    args = parse_args()
+    assert Path(args.source).exists()
+    with open(Path(args.source)) as f:
+        res = ast.parse(source=f.read())
+
+    if args.show_before:
+        print("====================================", file=sys.stderr)
+        for stmt in res.body:
+            print(ast.unparse(stmt), file=sys.stderr)
+        print("====================================", file=sys.stderr)
+
+    run(res, args.source)
 
 
 if __name__ == "__main__":
