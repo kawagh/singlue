@@ -16,6 +16,7 @@ def test_version():
         "test_resources/example1.py",
         "test_resources/example2.py",
         "test_resources/example3.py",
+        "test_resources/use_library_use_import.py",
     ],
 )
 def test_generated_files_finish_with_no_error(capsys, resource_file_path: str):

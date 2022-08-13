@@ -42,7 +42,10 @@ def run(res: ast.Module, source: str):
                     import_sentences_in_library |= set(
                         map(
                             ast.unparse,
-                            filter(lambda x: isinstance(x, ast.ImportFrom), res.body),
+                            filter(
+                                lambda x: isinstance(x, (ast.ImportFrom, ast.Import)),
+                                res.body,
+                            ),
                         )
                     )
                     found_fn_or_cls = resolve_fn_or_cls(func_or_cls.name, res)
