@@ -2,6 +2,8 @@ import ast
 import sys
 import argparse
 from typing import Set, List
+
+from singlue import __version__
 from pathlib import Path
 from typing import Optional
 
@@ -22,6 +24,14 @@ def parse_args() -> argparse.Namespace:
         default=False,
         action="store_true",
         help="output source (before integrating) to standard error",
+    )
+
+    parser.add_argument(
+        "-v",
+        "--version",
+        version=__version__,
+        action="version",
+        help="display singlue version",
     )
     return parser.parse_args()
 
