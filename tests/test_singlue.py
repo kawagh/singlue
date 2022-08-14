@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def test_version():
-    assert __version__ == "0.1.3"
+    assert __version__ == "0.1.4"
 
 
 @pytest.mark.parametrize(
