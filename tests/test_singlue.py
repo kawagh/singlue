@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def test_version():
-    assert __version__ == "0.1.3"
+    assert __version__ == "0.1.4"
 
 
 @pytest.mark.parametrize(
@@ -17,6 +17,7 @@ def test_version():
         "test_resources/example2.py",
         "test_resources/example3.py",
         "test_resources/use_library_use_import.py",
+        "test_resources/use_import_in_main.py",
     ],
 )
 def test_generated_files_finish_with_no_error(capsys, resource_file_path: str):

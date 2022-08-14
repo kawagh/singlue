@@ -2,6 +2,8 @@ import ast
 import sys
 import argparse
 from typing import Set, List
+
+from singlue import __version__
 from pathlib import Path
 from typing import Optional
 
@@ -23,6 +25,14 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="output source (before integrating) to standard error",
     )
+
+    parser.add_argument(
+        "-v",
+        "--version",
+        version=__version__,
+        action="version",
+        help="display singlue version",
+    )
     return parser.parse_args()
 
 
@@ -35,7 +45,8 @@ def run(res: ast.Module, source: str):
             # TODO replace import part to resolved code
             for func_or_cls in stmt.names:
                 if not Path(source).parent.joinpath(f"{stmt.module}.py").exists():
-                    # skip standard library (Example:`from math import sin`)
+                    non_import_sentences_in_main.append(ast.unparse(stmt))
+                    # expects standard or third-party library (Example:`from math import sin`)
                     continue
                 with open(Path(source).parent / f"{stmt.module}.py") as f:
                     res = ast.parse(source=f.read())
