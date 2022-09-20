@@ -42,12 +42,12 @@ def run(res: ast.Module, source: str):
     non_import_sentences_in_main: List[str] = []
     for stmt in res.body:
         if isinstance(stmt, ast.ImportFrom):
+            if not Path(source).parent.joinpath(f"{stmt.module}.py").exists():
+                non_import_sentences_in_main.append(ast.unparse(stmt))
+                # expects standard or third-party library (Example:`from math import sin`)
+                continue
             # TODO replace import part to resolved code
             for func_or_cls in stmt.names:
-                if not Path(source).parent.joinpath(f"{stmt.module}.py").exists():
-                    non_import_sentences_in_main.append(ast.unparse(stmt))
-                    # expects standard or third-party library (Example:`from math import sin`)
-                    continue
                 with open(Path(source).parent / f"{stmt.module}.py") as f:
                     res = ast.parse(source=f.read())
                     import_sentences_in_library |= set(
