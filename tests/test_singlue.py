@@ -33,3 +33,14 @@ def test_generated_files_finish_with_no_error(capsys, resource_file_path: str):
     assert subprocess.run(["python", temp_file_path]).returncode == 0
 
     temp_file_path.unlink()
+
+
+def test_generate_same_ast(capsys):
+    file_path = Path(__file__).parent / "test_resources/multi_import_from.py"
+    original_ast: ast.Module = ast.parse(source=file_path.read_text())
+    main.run(original_ast, "")
+    captured_stdout = capsys.readouterr().out
+    generated_output_ast: ast.Module = ast.parse(source=captured_stdout)
+    assert ast.dump(original_ast) == ast.dump(
+        generated_output_ast
+    ), "generate different AST"
