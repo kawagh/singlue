@@ -23,6 +23,7 @@ singlue main.py > output.py
 `singlue` generates `output.py` from `main.py`,`library.py`.
 
 
+## inputs
 
 ### `main.py`
 ```python
@@ -49,8 +50,9 @@ class Three:
     def three(self):
         return self.value
 ```
+## output
 
-### `output.py`
+### `output.py` (generated)
 ```python
 def one() -> int:
     return 1
